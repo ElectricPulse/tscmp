@@ -74,12 +74,18 @@ int main(int argc, char **argv) {
 
 	struct stat tsStat;
 
-	if(stat(tsFilename, &tsStat) == -1) {
-		perror("stat");
-		return 1;
-	}
+	time_t ts;
 
-	time_t ts = tsStat.st_mtim.tv_sec;
+	if(stat(tsFilename, &tsStat) == -1) {
+		if(errno == ENOENT) {
+			ts = 0;
+			errno = 0;
+		} else {
+			perror("stat");
+			return 1;
+		}
+	} else
+		ts = tsStat.st_mtim.tv_sec;
 
 	if(traverse(root, ts)) {
 		fprintf(stderr, "An error occured, exiting\n");

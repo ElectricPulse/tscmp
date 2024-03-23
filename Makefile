@@ -6,5 +6,8 @@ run: main
 debug: main
 	gdb --args ./main ${ARGS}
 
+install: main
+	cp main /usr/local/bin/main
+
 main: main.c
 	gcc -O0 -g -o main main.c
